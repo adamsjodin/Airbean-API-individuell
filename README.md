@@ -1,1 +1,1 @@
-# Crypto-sheriffs---AIRBEAN-API
+Airbean-API-individuell
