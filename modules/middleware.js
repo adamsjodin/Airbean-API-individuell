@@ -93,4 +93,12 @@ function checkToken(request, response, next) {
   }
 }
 
-module.exports = { checkBodySignup, checkExistingUser, checkToken, checkBodyGuestOrder, checkBodyProductId, checkBodyLogin, checkBodyUserId }
+module.exports = { 
+  checkBodySignup, 
+  checkExistingUser, 
+  checkToken, 
+  checkBodyGuestOrder, 
+  checkBodyProductId, 
+  checkBodyLogin, 
+  checkBodyUserId 
+}
