@@ -1,5 +1,5 @@
-const {usersDb} = require('./db');
-const moment = require('moment')
+const { usersDb } = require('./db');
+const moment = require('moment');
 
 //compare current time with order time
 //if difference is more than 30 minutes the status
@@ -15,7 +15,7 @@ async function estimatedDelivery(userId) {
               await usersDb.update({ _id: userId }, { $set: { [`orders.${index}.isDelivered`]: true } });
           } 
       };
-  }
-}
+  };
+};
 
-module.exports =  { estimatedDelivery }
+module.exports =  { estimatedDelivery };

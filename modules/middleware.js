@@ -8,9 +8,9 @@ function checkBodySignup(request, response, next) {
     (newUser.hasOwnProperty("username") && newUser.username.length !== 0) &&
     (newUser.hasOwnProperty("email") && newUser.email.length !== 0) &&
     (newUser.hasOwnProperty("password") && newUser.password.length !== 0) &&
-    (newUser.adress.hasOwnProperty("streetname") && newUser.adress.streetname.length !== 0) &&
-    (newUser.adress.hasOwnProperty("zipcode") && newUser.adress.zipcode.length !== 0) &&
-    (newUser.adress.hasOwnProperty("city") && newUser.adress.city.length !== 0)
+    (newUser.address.hasOwnProperty("streetname") && newUser.address.streetname.length !== 0) &&
+    (newUser.address.hasOwnProperty("zipcode") && newUser.address.zipcode.length !== 0) &&
+    (newUser.address.hasOwnProperty("city") && newUser.address.city.length !== 0)
   ) {
     next();
   } else {
@@ -77,21 +77,52 @@ function checkBodyUserId(request, response, next) {
   }
 }
 
-//Check if token is valid
+//Check if token is valid for normal user
 function checkToken(request, response, next) {
   const userId = request.body._id;
-  const token = request.headers.authorization
+  const token = request.headers.authorization;
   try {
-    const data = jwt.verify(token, 'a1b1c1')
+    const data = jwt.verify(token, 'a1b1c1');
     if (data.id === userId) {
       next()
     } else {
-      response.json({ success: false, error: 'Invalid token' })
-    }
+      response.json({ success: false, error: 'Invalid token' });
+    };
   } catch (error) {
-    response.json({ success: false, error: 'Invalid token' })
+    response.json({ success: false, error: 'Invalid token' });
+  };
+};
+
+
+// --- > ADMIN VIEW STARTS HERE <---- //
+
+
+//Check if user got admin rights
+async function checkAdminRole(request, response, next) {
+  const username = request.body.username;
+  const user = await usersDb.findOne({username: username });
+  if (user && user.role === "admin") {
+    next();
+  } else {
+    response.status(403).json({ success: false, message: "You do not have admin rights!" });
   }
 }
+
+//Check if admin token is valid based on admin role
+function checkAdminToken(request, response, next) {
+  
+  const token = request.headers.authorization;
+  try {
+    const data = jwt.verify(token, 'a1b1c1');
+    if (data.role === "admin") {
+      next();
+    } else {
+      response.status(403).json({ success: false, error: 'Invalid token' });
+    }
+  } catch (error) {
+    response.status(403).json({ success: false, error: 'Invalid token' });
+  }
+};
 
 module.exports = { 
   checkBodySignup, 
@@ -100,5 +131,7 @@ module.exports = {
   checkBodyGuestOrder, 
   checkBodyProductId, 
   checkBodyLogin, 
-  checkBodyUserId 
+  checkBodyUserId,
+  checkAdminRole,
+  checkAdminToken 
 }
